@@ -1,0 +1,86 @@
+{
+  "name": "electron-vue-app",
+  "version": "1.0.0",
+  "description": "Electron + Vue3 + TypeScript 桌面应用",
+  "main": "dist-electron/main.js",
+  "author": "Wan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wch919/electron-.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "electron:dev": "vite",
+    "electron:build": "vue-tsc && vite build && electron-builder",
+    "electron:build:win": "vue-tsc && vite build && electron-builder --win",
+    "electron:build:mac": "vue-tsc && vite build && electron-builder --mac",
+    "electron:build:linux": "vue-tsc && vite build && electron-builder --linux",
+    "type-check": "vue-tsc --noEmit",
+    "release": "node scripts/release.js"
+  },
+  "build": {
+    "appId": "com.yourcompany.electronvueapp",
+    "productName": "Electron Vue App",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "public/icon.icns",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "public/icon.png",
+      "category": "Utility"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "wch919",
+        "repo": "electron-",
+        "private": false
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.1",
+    "pinia": "^3.0.4",
+    "vue": "^3.3.4",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.2",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/tsconfig": "^0.4.0",
+    "electron": "^25.3.2",
+    "electron-builder": "^24.4.0",
+    "electron-log": "^5.4.4",
+    "typescript": "^5.0.2",
+    "vite": "^5.0.0",
+    "vite-plugin-electron": "^0.28.0",
+    "vue-tsc": "^2.0.0"
+  }
+}

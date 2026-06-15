@@ -1,0 +1,46 @@
+# .github/workflows/build.yml
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # 当推送v开头的tag时触发
+  workflow_dispatch:  # 支持手动触发
+
+jobs:
+  build:
+    runs-on: windows-latest  # 只构建Windows版本
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+        
+      - name: 设置Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: 安装依赖
+        run: npm ci
+        
+      - name: 类型检查
+        run: npm run type-check
+        
+      - name: 构建应用
+        run: npm run electron:build:win
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          
+      - name: 创建Release并上传文件
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            release/*.exe
+            release/*.exe.blockmap
+            release/*.yml
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
