@@ -1,6 +1,6 @@
 {
   "name": "electron-vue-app",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "description": "Electron + Vue3 + TypeScript 桌面应用",
   "main": "dist-electron/main.js",
   "author": "Wan",
@@ -22,7 +22,7 @@
   },
   "build": {
     "appId": "com.yourcompany.electronvueapp",
-    "productName": "Electron Vue App",
+    "productName": "Electron.Vue.App",
     "directories": {
       "output": "release"
     },
