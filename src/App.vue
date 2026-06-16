@@ -79,7 +79,7 @@ onMounted(() => {
 }
 
 .header {
-  background: rgba(170, 241, 176, 0.95);
+  background: rgba(11, 248, 31, 0.95);
   padding: 20px 30px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;

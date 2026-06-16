@@ -32,7 +32,8 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "public/icon.ico"
+      "icon": "public/icon.ico",
+      "artifactName": "Electron.Vue.App.Setup.${version}.${ext}"
     },
     "mac": {
       "target": [
