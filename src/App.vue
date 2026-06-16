@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="header">
-      <h1>Electron + Vue3 + TypeScript 桌面应用</h1>
+      <h1>Electron + Vue3 + TypeScript + pinia + 桌面应用</h1>
       <div class="version-info">
         <span>当前版本: v{{ version }}</span>
         <button @click="handleCheckUpdate" class="check-update-btn" :disabled="isChecking">
@@ -33,6 +33,7 @@ const version = ref('1.0.0')
 const isChecking = ref(false)
 
 const getAppVersion = async (): Promise<void> => {
+  console.log(window.electronAPI.getAppVersion(), window.electronAPI)
   if (window.electronAPI) {
     try {
       const ver = await window.electronAPI.getAppVersion()

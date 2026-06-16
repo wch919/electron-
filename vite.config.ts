@@ -12,7 +12,11 @@ export default defineConfig({
         build: {
           outDir: 'dist-electron',
           rollupOptions: {
-            external: ['electron', 'electron-updater']
+            external: ['electron', 'electron-updater'],
+            input: {
+              main: 'electron/main.ts',
+              preload: 'electron/preload.ts'  // 明确指定 preload 入口
+            }
           }
         }
       }
