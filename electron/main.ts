@@ -2,29 +2,62 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-// 添加日志（方便调试）
-const log = (message: string) => {
-  console.log(`[${new Date().toISOString()}] ${message}`)
-}
+import fs from 'fs'
 
 let mainWindow: BrowserWindow | null = null
 
+// 配置自动更新
+autoUpdater.autoDownload = false
+autoUpdater.autoInstallOnAppQuit = true
+
+// 获取 preload 脚本的正确路径
+function getPreloadPath(): string {
+  const isDev = !app.isPackaged
+  
+  if (isDev) {
+    const devPath = path.join(__dirname, 'preload.ts')
+    if (fs.existsSync(devPath)) {
+      console.log('Using dev preload:', devPath)
+      return devPath
+    }
+  }
+  
+  const possiblePaths = [
+    path.join(__dirname, 'preload.js'),
+    path.join(process.resourcesPath, 'app.asar', 'dist-electron', 'preload.js'),
+    path.join(__dirname, '../dist-electron/preload.js')
+  ]
+  
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      console.log('Using preload:', p)
+      return p
+    }
+  }
+  
+  console.error('Preload script not found')
+  return ''
+}
+
 function createWindow(): void {
+  const preloadPath = getPreloadPath()
+  
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
-    }
+      preload: preloadPath
+    },
+    icon: path.join(__dirname, '../public/icon.ico'),
+    show: false
   })
 
-  // 判断是否开发环境
+  mainWindow.once('ready-to-show', () => {
+    mainWindow?.show()
+  })
+
   const isDev = !app.isPackaged
   
   if (isDev) {
@@ -38,7 +71,6 @@ function createWindow(): void {
     mainWindow = null
   })
 
-  // 生产环境配置自动更新
   if (!isDev) {
     setupAutoUpdater()
   }
@@ -46,7 +78,7 @@ function createWindow(): void {
 
 // 配置自动更新
 function setupAutoUpdater() {
-  // 设置更新服务器地址（使用GitHub）
+  // 配置 GitHub 更新源
   autoUpdater.setFeedURL({
     provider: 'github',
     owner: 'wch919',
@@ -54,76 +86,89 @@ function setupAutoUpdater() {
     private: false
   })
   
-  // 启动后3秒检查更新
+  // 启动后5秒检查更新
   setTimeout(() => {
-    log('检查更新...')
-    autoUpdater.checkForUpdates()
-  }, 3000)
+    console.log('Checking for updates...')
+    autoUpdater.checkForUpdates().catch(err => {
+      console.error('Update check failed:', err)
+    })
+  }, 5000)
   
   // 每小时检查一次
   setInterval(() => {
-    log('定时检查更新...')
-    autoUpdater.checkForUpdates()
+    console.log('Scheduled update check...')
+    autoUpdater.checkForUpdates().catch(err => {
+      console.error('Scheduled update check failed:', err)
+    })
   }, 60 * 60 * 1000)
   
   // 更新事件监听
   autoUpdater.on('checking-for-update', () => {
-    log('正在检查更新...')
+    console.log('Checking for update...')
     mainWindow?.webContents.send('update-status', '正在检查更新...')
   })
   
   autoUpdater.on('update-available', (info) => {
-    log('发现新版本:', info.version)
+    console.log('Update available:', info.version)
     mainWindow?.webContents.send('update-available', info)
   })
   
   autoUpdater.on('update-not-available', () => {
-    log('当前已是最新版本')
+    console.log('Update not available')
     mainWindow?.webContents.send('update-status', '当前已是最新版本')
   })
   
   autoUpdater.on('error', (err) => {
-    log('更新错误:', err.message)
+    console.error('Update error:', err)
     mainWindow?.webContents.send('update-error', err.message)
   })
   
   autoUpdater.on('download-progress', (progress) => {
-    log(`下载进度: ${progress.percent.toFixed(2)}%`)
+    console.log(`Download progress: ${progress.percent.toFixed(2)}%`)
     mainWindow?.webContents.send('update-progress', progress)
   })
   
   autoUpdater.on('update-downloaded', (info) => {
-    log('更新下载完成:', info.version)
+    console.log('Update downloaded:', info.version)
     mainWindow?.webContents.send('update-downloaded', info)
   })
 }
 
-// IPC通信
+// IPC 通信
 ipcMain.handle('start-download', () => {
-  log('开始下载更新')
+  console.log('Starting download...')
   autoUpdater.downloadUpdate()
 })
 
 ipcMain.handle('quit-and-install', () => {
-  log('退出并安装更新')
+  console.log('Quitting and installing...')
   autoUpdater.quitAndInstall()
 })
 
 ipcMain.handle('check-for-updates', () => {
-  log('手动检查更新')
+  console.log('Manual check for updates...')
   autoUpdater.checkForUpdates()
 })
 
 ipcMain.handle('get-app-version', () => {
-  return app.getVersion()
+  const version = app.getVersion()
+  console.log('Current version:', version)
+  return version
 })
 
 app.whenReady().then(() => {
+  console.log('App ready, creating window...')
   createWindow()
 })
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
+  }
+})
+
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow()
   }
 })

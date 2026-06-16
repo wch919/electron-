@@ -29,7 +29,7 @@
 import { ref, onMounted } from 'vue'
 import AutoUpdate from './components/AutoUpdate.vue'
 
-const version = ref('1.1.0')
+const version = ref('1.0.0')
 const isChecking = ref(false)
 
 const getAppVersion = async (): Promise<void> => {
