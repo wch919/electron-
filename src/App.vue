@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="header">
-      <h1>Electron + Vue3 + TypeScript + pinia + 桌面应用</h1>
+      <h1>Electron + Vue3 + 桌面应用</h1>
       <div class="version-info">
         <span>当前版本: v{{ version }}</span>
         <button @click="handleCheckUpdate" class="check-update-btn" :disabled="isChecking">
@@ -29,7 +29,7 @@
 import { ref, onMounted } from 'vue'
 import AutoUpdate from './components/AutoUpdate.vue'
 
-const version = ref('1.0.0')
+const version = ref('1.1.0')
 const isChecking = ref(false)
 
 const getAppVersion = async (): Promise<void> => {
@@ -79,7 +79,7 @@ onMounted(() => {
 }
 
 .header {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(170, 241, 176, 0.95);
   padding: 20px 30px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
