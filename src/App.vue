@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="header">
+    <!-- <div class="header">
       <h1>Electron + Vue3 + 桌面应用</h1>
       <div class="version-info">
         <span>当前版本: v{{ version }}</span>
@@ -20,7 +20,8 @@
           <li>✅ 开发热重载</li>
         </ul>
       </div>
-    </div>
+    </div> -->
+    <router-view />
     <AutoUpdate />
   </div>
 </template>
@@ -28,8 +29,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import AutoUpdate from './components/AutoUpdate.vue'
+// import { app } from 'electron'
 
-const version = ref('1.0.1')
+// console.log(app.getVersion())
+const version = ref('1.0.0')
 const isChecking = ref(false)
 
 const getAppVersion = async (): Promise<void> => {
@@ -79,7 +82,7 @@ onMounted(() => {
 }
 
 .header {
-  background: rgba(11, 248, 31, 0.95);
+  background: rgba(252, 252, 252, 0.95);
   padding: 20px 30px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;

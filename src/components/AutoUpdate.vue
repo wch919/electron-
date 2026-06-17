@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import type { UpdateInfo, DownloadProgress, UpdateStatus } from '../../types/electron'
+import type { UpdateInfo, DownloadProgress, UpdateStatus } from '@/types/electron'
 
 const updateStatus = ref<UpdateStatus | null>(null)
 const downloadProgress = ref<DownloadProgress | null>(null)

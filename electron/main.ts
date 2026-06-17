@@ -43,8 +43,8 @@ function createWindow(): void {
   const preloadPath = getPreloadPath()
   
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1920,
+    height: 1080,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

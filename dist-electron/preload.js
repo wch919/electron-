@@ -1,1 +1,26 @@
-"use strict";const e=require("electron");e.contextBridge.exposeInMainWorld("electronAPI",{onUpdateStatus:r=>{e.ipcRenderer.on("update-status",(n,o)=>r(o))},onUpdateAvailable:r=>{e.ipcRenderer.on("update-available",(n,o)=>r(o))},onUpdateProgress:r=>{e.ipcRenderer.on("update-progress",(n,o)=>r(o))},onUpdateDownloaded:r=>{e.ipcRenderer.on("update-downloaded",(n,o)=>r(o))},onUpdateError:r=>{e.ipcRenderer.on("update-error",(n,o)=>r(o))},startDownload:()=>e.ipcRenderer.invoke("start-download"),quitAndInstall:()=>e.ipcRenderer.invoke("quit-and-install"),checkForUpdates:()=>e.ipcRenderer.invoke("check-for-updates"),getAppVersion:()=>e.ipcRenderer.invoke("get-app-version")});console.log("Preload script loaded successfully");
+"use strict";
+const electron = require("electron");
+electron.contextBridge.exposeInMainWorld("electronAPI", {
+  // 更新事件监听
+  onUpdateStatus: (callback) => {
+    electron.ipcRenderer.on("update-status", (_, status) => callback(status));
+  },
+  onUpdateAvailable: (callback) => {
+    electron.ipcRenderer.on("update-available", (_, info) => callback(info));
+  },
+  onUpdateProgress: (callback) => {
+    electron.ipcRenderer.on("update-progress", (_, progress) => callback(progress));
+  },
+  onUpdateDownloaded: (callback) => {
+    electron.ipcRenderer.on("update-downloaded", (_, info) => callback(info));
+  },
+  onUpdateError: (callback) => {
+    electron.ipcRenderer.on("update-error", (_, error) => callback(error));
+  },
+  // 操作方法
+  startDownload: () => electron.ipcRenderer.invoke("start-download"),
+  quitAndInstall: () => electron.ipcRenderer.invoke("quit-and-install"),
+  checkForUpdates: () => electron.ipcRenderer.invoke("check-for-updates"),
+  getAppVersion: () => electron.ipcRenderer.invoke("get-app-version")
+});
+console.log("Preload script loaded successfully");
