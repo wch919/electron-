@@ -1,6 +1,6 @@
 {
   "name": "electron-vue-app",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Electron + Vue3 + TypeScript",
   "main": "dist-electron/main.js",
   "author": "Wan",
